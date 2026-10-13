@@ -274,13 +274,7 @@
   <div class="section-label">Explore</div>
   <h1 class="section-title">Internship Listings</h1>
   <p class="section-sub">
-    Curated opportunities from multiple platforms — filtered, deduplicated, and updated in real time.
-  </p>
-  <p style="margin-top:10px; font-size:0.8rem; color:#6b6b6b;">
-  Type: {{ listing_type }} <br>
-  Query: {{ query_used }} <br>
-  Skills: {{ saved_skills }} <br>
-  Jobs count: {{ jobs|length }}
+    Internship opportunities pulled live from Google Jobs and matched to your skills.
   </p>
   <a href="{% url 'listings' %}?type=recommended" style="display:inline-block; margin-top:20px;">
   <button style="
@@ -315,7 +309,12 @@
     <div class="filter-chip">Paid</div>
   </div>
 </section>
-  <section class="listings-grid">
+{% if api_error %}
+  <p style="padding: 0 48px; color: #b00020;">{{ api_error }}</p>
+{% elif not jobs %}
+  <p style="padding: 0 48px; color: #6b6b6b;">No internships found for this search.</p>
+{% endif %}
+<section class="listings-grid">
 
   {% for job in jobs %}
     <div class="listing-card">

@@ -129,3 +129,10 @@ LOGIN_URL = ''
 
 MEDIA_URL='/media/'
 MEDIA_ROOT='media'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR / "cache",
+    }
+}
