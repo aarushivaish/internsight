@@ -43,7 +43,7 @@ internsight/
 
 1. Clone the repo and open the project folder:
    ```
-   git clone https://github.com/YOUR-USERNAME/internsight.git
+   git clone https://github.com/aarushivaish/internsight.git
    cd internsight
    ```
 
@@ -99,6 +99,3 @@ internsight/
 - API keys and the Django secret key are read from environment variables and are not stored in the repository.
 - `DEBUG` is on in the default settings. Turn it off and set `ALLOWED_HOSTS` before deploying anywhere public.
 
-## License
-
-Add a license of your choice, for example MIT, if you want others to reuse the code.
