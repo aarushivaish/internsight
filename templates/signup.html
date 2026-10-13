@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign Up – InternSight</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:#f4f3f0;
+  --card:#ffffff;
+  --accent:#1e2d4a;
+  --accent2:#3d5a80;
+  --gold:#c8a96e;
+  --ink:#1a1a1a;
+  --muted:#6b6b6b;
+}
+
+body {
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  position: relative;   
+}
+
+.auth-card {
+  background:var(--card);
+  padding:48px;
+  border-radius:20px;
+  width:360px;
+  box-shadow:0 20px 50px rgba(30,45,74,0.1);
+}
+
+.auth-card h2 {
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  color:var(--accent);
+  margin-bottom:10px;
+}
+
+.auth-card p {
+  color:var(--muted);
+  margin-bottom:30px;
+  font-size:0.9rem;
+}
+
+input {
+  width:100%;
+  padding:12px;
+  margin-bottom:16px;
+  border-radius:8px;
+  border:1px solid #ddd;
+}
+
+button {
+  width:100%;
+  padding:12px;
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+}
+
+button:hover {
+  background:var(--accent2);
+}
+
+.switch {
+  margin-top:18px;
+  text-align:center;
+  font-size:0.85rem;
+}
+
+.switch a {
+  color:var(--accent);
+  text-decoration:none;
+}
+.auth-logo {
+  position: absolute;
+  top: 32px;
+  left: 40px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-logo .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+</style>
+</head>
+
+<body>
+<div class="auth-logo">
+    <span class="dot"></span>InternSight
+</div>
+<div class="auth-card">
+  <h2>Create Account</h2>
+  <p>Join InternSight and start discovering smarter</p>
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="file" name="resume" accept=".pdf">
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <div class="switch">
+    Already have an account? <a href="{% url 'login' %}">Login</a>
+  </div>
+</div>
+
+</body>
+</html>

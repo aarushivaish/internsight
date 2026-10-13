@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InternSight – Listings</title>
+
+  <!-- SAME FONTS -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    /* ─── SAME ROOT VARIABLES ─── */
+    :root {
+      --bg: #f4f3f0;
+      --surface: #edecea;
+      --card: #ffffff;
+      --ink: #1a1a1a;
+      --ink-muted: #6b6b6b;
+      --ink-faint: #a8a8a8;
+      --accent: #1e2d4a;
+      --accent2: #3d5a80;
+      --gold: #c8a96e;
+      --border: rgba(30,45,74,0.10);
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(244,243,240,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+      text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .nav-logo .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: inline-block;
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+      color: var(--ink-muted);
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1.5px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: var(--accent); }
+    .nav-links a.active::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 0.85rem !important;
+      font-weight: 500 !important;
+      transition: background 0.2s, transform 0.15s !important;
+    }
+
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px); color: #fff !important; }
+
+    /* ─── PAGE HEADER ─── */
+    .listings-hero {
+      padding: 140px 48px 60px;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-family: 'Syne';
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      color: var(--ink-muted);
+      max-width: 520px;
+      line-height: 1.6;
+    }
+
+    /* ─── FILTER BAR ─── */
+    .filters {
+      margin-top: 32px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      background: var(--card);
+      transition: 0.2s;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--accent);
+      background: rgba(30,45,74,0.05);
+    }
+
+    /* ─── GRID ─── */
+    .listings-grid {
+      padding: 0 48px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    /* ─── CARD ─── */
+    .listing-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .listing-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(30,45,74,0.12);
+    }
+
+    .listing-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transition: 0.3s;
+    }
+
+    .listing-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .company {
+      font-size: 0.8rem;
+      color: var(--gold);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .role {
+      font-family: 'Syne';
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .meta {
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      margin-bottom: 16px;
+    }
+
+    .tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: rgba(30,45,74,0.07);
+      color: var(--accent);
+    }
+
+    .apply-btn {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    /* ─── FOOTER (UNCHANGED) ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      font-family: 'Syne';
+      font-weight: 800;
+      color: var(--ink-faint);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      text-decoration: none;
+      font-size: 0.8rem;
+      color: var(--ink-faint);
+    }
+
+  </style>
+</head>
+
+<body>
+
+<!-- NAV -->
+{% include 'partials/_header.html' %}
+
+<!-- HERO -->
+<section class="listings-hero">
+  <div class="section-label">Explore</div>
+  <h1 class="section-title">Internship Listings</h1>
+  <p class="section-sub">
+    Curated opportunities from multiple platforms — filtered, deduplicated, and updated in real time.
+  </p>
+  <p style="margin-top:10px; font-size:0.8rem; color:#6b6b6b;">
+  Type: {{ listing_type }} <br>
+  Query: {{ query_used }} <br>
+  Skills: {{ saved_skills }} <br>
+  Jobs count: {{ jobs|length }}
+  </p>
+  <a href="{% url 'listings' %}?type=recommended" style="display:inline-block; margin-top:20px;">
+  <button style="
+    padding:10px 18px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  ">
+    Show Recommended Jobs
+  </button>
+</a>
+<a href="{% url 'listings' %}?type=all" style="display:inline-block; margin-top:20px;">
+  <button style="
+  padding:10px 18px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  ">
+  All Jobs</button>
+</a>
+  <div class="filters">
+    <div class="filter-chip">All</div>
+    <div class="filter-chip">Software</div>
+    <div class="filter-chip">AI/ML</div>
+    <div class="filter-chip">Remote</div>
+    <div class="filter-chip">Paid</div>
+  </div>
+</section>
+  <section class="listings-grid">
+
+  {% for job in jobs %}
+    <div class="listing-card">
+
+      <div class="company">{{ job.company_name }}</div>
+
+      <div class="role">{{ job.title }}</div>
+
+      <div class="meta">
+        {{ job.location }}
+      </div>
+
+      <div class="tags">
+        {% if job.detected_extensions %}
+          {% for key, value in job.detected_extensions.items %}
+            <span class="tag">{{ value }}</span>
+          {% endfor %}
+        {% endif %}
+      </div>
+      {% if job.match_score %}
+  <div style="margin-top: 8px;">
+    <span class="tag" style="background:#c8a96e; color:white;">
+      Match Score: {{ job.match_score }}
+    </span>
+  </div>
+{% endif %}
+
+      <a href="{{ job.apply_options.0.link }}" target="_blank" class="apply-btn">
+        View Details →
+      </a>
+
+    </div>
+  {% endfor %}
+
+  </section>
+</section>
+
+<!-- FOOTER -->
+{% include 'partials/_footer.html' %}
+
+</body>
+</html>

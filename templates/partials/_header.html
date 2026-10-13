@@ -1,0 +1,25 @@
+  <!-- ─── NAV ─── -->
+  <nav>
+    <a href="{% url 'home' %}" class="nav-logo">
+      <span class="dot"></span>InternSight
+    </a>
+    <ul class="nav-links">
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+      <li><a href="{% url 'listings' %}">Listings</a></li>
+      <li><a href="{% url 'about' %}">About</a></li>
+      {% if user.is_authenticated %}
+      <li>
+        <a href="{% url 'logout' %}" class="nav-cta" style="background:#c8a96e;">
+          Logout
+        </a>
+      </li>
+      {% else %}
+        <li>
+          <a href="{% url 'login' %}" class="nav-cta">
+            Sign In
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>

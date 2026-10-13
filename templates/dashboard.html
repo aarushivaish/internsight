@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InternSight – Dashboard</title>
+
+  <!-- SAME FONTS -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:#f4f3f0;
+      --surface:#edecea;
+      --card:#ffffff;
+      --ink:#1a1a1a;
+      --ink-muted:#6b6b6b;
+      --ink-faint:#a8a8a8;
+      --accent:#1e2d4a;
+      --accent2:#3d5a80;
+      --gold:#c8a96e;
+      --border:rgba(30,45,74,0.10);
+      --radius:12px;
+      --radius-lg:20px;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family:'DM Sans', sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(244,243,240,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+      text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .nav-logo .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: inline-block;
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+      color: var(--ink-muted);
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1.5px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: var(--accent); }
+    .nav-links a.active::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 0.85rem !important;
+      font-weight: 500 !important;
+      transition: background 0.2s, transform 0.15s !important;
+    }
+
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px); color: #fff !important; }
+    
+    /* HEADER */
+    .dashboard-header {
+      padding:140px 48px 40px;
+    }
+
+    .section-label {
+      font-size:0.75rem;
+      letter-spacing:1.5px;
+      color:var(--gold);
+      margin-bottom:12px;
+      text-transform:uppercase;
+    }
+
+    .section-title {
+      font-family:'Syne';
+      font-size:2.4rem;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .section-sub {
+      color:var(--ink-muted);
+    }
+
+    /* GRID */
+    .dashboard-grid {
+      padding:0 48px 80px;
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+      gap:24px;
+    }
+
+    /* CARDS */
+    .card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:28px;
+      transition:0.25s;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card:hover {
+      transform:translateY(-6px);
+      box-shadow:0 20px 50px rgba(30,45,74,0.12);
+    }
+
+    .card::before {
+      content:'';
+      position:absolute;
+      top:0; left:0; right:0;
+      height:3px;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      transform:scaleX(0);
+      transition:0.3s;
+    }
+
+    .card:hover::before { transform:scaleX(1); }
+
+    .card-title {
+      font-family:'Syne';
+      font-size:1rem;
+      font-weight:700;
+      margin-bottom:14px;
+    }
+
+    /* METRICS */
+    .metric {
+      font-family:'Syne';
+      font-size:2rem;
+      font-weight:800;
+      color:var(--accent);
+    }
+
+    .metric-sub {
+      font-size:0.8rem;
+      color:var(--ink-faint);
+      margin-top:4px;
+    }
+
+    /* LIST */
+    .mini-list {
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .mini-item {
+      font-size:0.85rem;
+      color:var(--ink-muted);
+      display:flex;
+      justify-content:space-between;
+    }
+
+    .mini-item span {
+      color:var(--accent);
+      font-weight:500;
+    }
+
+    /* BUTTON */
+    .btn {
+      margin-top:16px;
+      display:inline-block;
+      text-decoration:none;
+      font-size:0.85rem;
+      color:var(--accent);
+    }
+
+    /* FOOTER (YOUR VERSION) */
+    footer {
+      border-top:1px solid var(--border);
+      padding:40px 48px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:16px;
+    }
+
+    .footer-logo {
+      font-family:'Syne';
+      font-weight:800;
+      color:var(--ink-faint);
+      display:flex; align-items:center; gap:7px;
+    }
+
+    .footer-links {
+      display:flex;
+      gap:28px;
+      list-style:none;
+    }
+
+    .footer-links a {
+      font-size:0.82rem;
+      color:var(--ink-faint);
+      text-decoration:none;
+    }
+
+    .footer-copy {
+      font-size:0.78rem;
+      color:var(--ink-faint);
+    }
+
+  </style>
+</head>
+
+<body>
+
+<!-- NAV -->
+{% include 'partials/_header.html' %}
+
+<!-- HEADER -->
+<section class="dashboard-header">
+  <div class="section-label">Overview</div>
+  <h1 class="section-title">Your Dashboard</h1>
+  <p class="section-sub">
+    Track applications, monitor opportunities, and stay ahead of deadlines.
+  </p>
+</section>
+
+<!-- GRID -->
+<section class="dashboard-grid">
+
+  <!-- METRIC CARDS -->
+  <div class="card">
+    <div class="card-title">Applications Sent</div>
+    <div class="metric">12</div>
+    <div class="metric-sub">+3 this week</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Saved Listings</div>
+    <div class="metric">28</div>
+    <div class="metric-sub">Across 5 platforms</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Deadlines This Week</div>
+    <div class="metric">4</div>
+    <div class="metric-sub">Don’t miss them</div>
+  </div>
+
+  <!-- RECENT ACTIVITY -->
+  <div class="card">
+    <div class="card-title">Recent Activity</div>
+    <div class="mini-list">
+      <div class="mini-item">Applied to Google <span>2h ago</span></div>
+      <div class="mini-item">Saved Microsoft role <span>Yesterday</span></div>
+      <div class="mini-item">Viewed Amazon listing <span>2d ago</span></div>
+    </div>
+  </div>
+
+  <!-- RECOMMENDATIONS -->
+  <div class="card">
+    <div class="card-title">Recommended For You</div>
+    <div class="mini-list">
+      <div class="mini-item">Backend Intern <span>Stripe</span></div>
+      <div class="mini-item">ML Intern <span>OpenAI</span></div>
+      <div class="mini-item">Frontend Intern <span>Notion</span></div>
+    </div>
+    <a href="{% url 'listings' %}" class="btn">Explore more →</a>
+  </div>
+
+  <!-- GOAL -->
+  <div class="card">
+    <div class="card-title">Weekly Goal</div>
+    <div class="metric">75%</div>
+    <div class="metric-sub">Applications target progress</div>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+{% include 'partials/_footer.html' %}
+
+</body>
+</html>

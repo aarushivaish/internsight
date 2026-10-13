@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InternSight – Intelligent Internship Discovery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>  <style>
+    :root {
+      --bg:        #f4f3f0;
+      --surface:   #edecea;
+      --card:      #ffffff;
+      --ink:       #1a1a1a;
+      --ink-muted: #6b6b6b;
+      --ink-faint: #a8a8a8;
+      --accent:    #1e2d4a;   /* deep navy from PPT */
+      --accent2:   #3d5a80;   /* mid-blue */
+      --gold:      #c8a96e;   /* warm gold accent */
+      --border:    rgba(30,45,74,0.10);
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(244,243,240,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+      text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .nav-logo .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: inline-block;
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+      color: var(--ink-muted);
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1.5px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: var(--accent); }
+    .nav-links a.active::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 0.85rem !important;
+      font-weight: 500 !important;
+      transition: background 0.2s, transform 0.15s !important;
+    }
+
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px); color: #fff !important; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 48px 80px;
+      position: relative; overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 80% 40%, rgba(61,90,128,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 20% 70%, rgba(200,169,110,0.07) 0%, transparent 60%);
+    }
+
+    /* subtle grid pattern */
+    .hero-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(30,45,74,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,45,74,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    .hero-content {
+      position: relative; z-index: 1;
+      max-width: 680px;
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(30,45,74,0.07);
+      border: 1px solid rgba(30,45,74,0.14);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--accent2);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0; animation: fadeUp 0.6s 0.1s forwards;
+    }
+
+    .hero-tag .pulse {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 5.5vw, 4.4rem);
+      font-weight: 800;
+      line-height: 1.06;
+      letter-spacing: -2px;
+      color: var(--ink);
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.7s 0.2s forwards;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+      position: relative;
+    }
+
+    .hero h1 em::after {
+      content: '';
+      position: absolute;
+      bottom: 4px; left: 0; right: 0;
+      height: 3px;
+      background: var(--gold);
+      border-radius: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: underlineIn 0.5s 0.9s forwards;
+    }
+
+    @keyframes underlineIn { to { transform: scaleX(1); } }
+
+    .hero p {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--ink-muted);
+      max-width: 520px;
+      margin-bottom: 40px;
+      opacity: 0; animation: fadeUp 0.7s 0.35s forwards;
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 16px;
+      flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.7s 0.5s forwards;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(30,45,74,0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(30,45,74,0.28);
+    }
+
+    .btn-secondary {
+      color: var(--accent);
+      background: transparent;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border: 1.5px solid rgba(30,45,74,0.22);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: rgba(30,45,74,0.04);
+    }
+
+    .hero-stats {
+      position: absolute; bottom: 64px; right: 48px; z-index: 1;
+      display: flex; gap: 40px;
+      opacity: 0; animation: fadeUp 0.7s 0.65s forwards;
+    }
+
+    .stat { text-align: right; }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--ink-faint);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    /* ─── SECTION BASE ─── */
+    section { padding: 96px 48px; }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--ink-muted);
+      max-width: 520px;
+    }
+
+    /* ─── PROBLEM SECTION ─── */
+    .problem {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .problem .section-label { color: var(--gold); }
+    .problem .section-title { color: #fff; }
+    .problem .section-sub { color: rgba(255,255,255,0.65); }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 56px;
+    }
+
+    .problem-item {
+      padding: 36px 32px;
+      background: rgba(255,255,255,0.03);
+      transition: background 0.25s;
+    }
+
+    .problem-item:hover { background: rgba(255,255,255,0.07); }
+
+    .problem-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .problem-item h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
+
+    .problem-item p {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* ─── SOLUTION SECTION ─── */
+    .solution { background: var(--bg); }
+
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+
+    .solution-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+
+    .solution-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+
+    .solution-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(30,45,74,0.1); }
+    .solution-card:hover::before { transform: scaleX(1); }
+
+    .card-icon {
+      width: 44px; height: 44px;
+      background: rgba(30,45,74,0.07);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .card-icon svg { width: 22px; height: 22px; stroke: var(--accent); }
+
+    .solution-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+
+    .solution-card p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--ink-muted);
+    }
+
+    
+    /* ─── FEATURES / IMPACT ─── */
+    .impact { background: var(--bg); }
+
+    .impact-inner {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: start;
+      margin-top: 56px;
+    }
+
+    .impact-list {
+      display: flex; flex-direction: column; gap: 32px;
+    }
+
+    .impact-item {
+      display: flex; gap: 18px; align-items: flex-start;
+    }
+
+    .impact-badge {
+      min-width: 48px; height: 48px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .impact-item h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+
+    .impact-item p {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--ink-muted);
+    }
+
+    .impact-highlight {
+      background: var(--accent);
+      border-radius: var(--radius-lg);
+      padding: 56px 48px;
+      color: #fff;
+      position: relative; overflow: hidden;
+    }
+
+    .impact-highlight::before {
+      content: '"';
+      font-family: 'Syne', sans-serif;
+      font-size: 14rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.05);
+      position: absolute;
+      top: -40px; left: 20px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .impact-quote {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.4;
+      letter-spacing: -0.5px;
+      margin-bottom: 24px;
+      position: relative; z-index: 1;
+    }
+
+    .impact-sub {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+      position: relative; z-index: 1;
+    }
+
+    .impact-metric {
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      display: flex; gap: 40px;
+      position: relative; z-index: 1;
+    }
+
+    .metric-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -1.5px;
+      line-height: 1;
+    }
+
+    .metric-val span { color: var(--gold); }
+
+    .metric-lbl {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 5px;
+    }
+
+    /* ─── CTA BANNER ─── */
+    .cta-banner {
+      background: var(--surface);
+      padding: 80px 48px;
+    }
+
+    .cta-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .cta-inner .section-title { margin: 0 auto 14px; }
+    .cta-inner .section-sub { margin: 0 auto 36px; }
+
+    .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--ink-faint);
+      display: flex; align-items: center; gap: 7px;
+    }
+
+    .footer-links {
+      display: flex; gap: 28px; list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.82rem;
+      color: var(--ink-faint);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--ink); }
+
+    .footer-copy {
+      font-size: 0.78rem;
+      color: var(--ink-faint);
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links { gap: 20px; }
+      .hero, section { padding-left: 24px; padding-right: 24px; }
+      .hero-stats { right: 24px; bottom: 40px; gap: 24px; }
+      .arch-wrapper, .impact-inner { grid-template-columns: 1fr; gap: 40px; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 2.4rem; }
+      .hero-stats { position: static; flex-direction: row; margin-top: 48px; }
+      .stat { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  {% include 'partials/_header.html' %}
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span class="pulse"></span>
+        Django-Powered Platform
+      </div>
+      <h1>
+        Discover Internships.<br/>
+        <em>Without the Noise.</em>
+      </h1>
+      <p>
+        InternSight aggregates opportunities from across the web into one
+        intelligent dashboard — so you spend less time searching and more
+        time applying.
+      </p>
+      <div class="hero-actions">
+        <a href="{% url 'listings' %}" class="btn-primary">Explore Listings</a>
+        <a href="#" class="btn-secondary">Learn How It Works</a>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">5–7h</div>
+        <div class="stat-label">Saved weekly</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Sources scraped</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">Real‑time</div>
+        <div class="stat-label">Updates</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PROBLEM ─── -->
+  <section class="problem">
+    <div class="section-label">The Problem</div>
+    <h2 class="section-title">Why internship hunting is broken</h2>
+    <p class="section-sub">Students face a fragmented, manual, and error-prone process that wastes time and causes missed opportunities.</p>
+
+    <div class="problem-grid">
+      <div class="problem-item">
+        <div class="problem-num">01</div>
+        <h3>Dispersed Opportunities</h3>
+        <p>Listings are scattered across dozens of platforms, making a comprehensive search tedious and time-consuming.</p>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">02</div>
+        <h3>Manual Search Burden</h3>
+        <p>Students invest countless hours in manual searching, leading to inefficiency and potential burnout.</p>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">03</div>
+        <h3>Missed Deadlines</h3>
+        <p>Inconsistent tracking across platforms often results in overlooked deadlines and missed opportunities.</p>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">04</div>
+        <h3>Inefficient Browsing</h3>
+        <p>The current browsing process is repetitive, lacking the automation needed for effective discovery.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SOLUTION ─── -->
+  <section class="solution">
+    <div class="section-label">The Solution</div>
+    <h2 class="section-title">One platform. Every opportunity.</h2>
+    <p class="section-sub">InternSight automates the discovery process so the right roles find you — filtered, deduplicated, and up to date.</p>
+
+    <div class="solution-grid">
+      <div class="solution-card">
+        <div class="card-icon">
+          <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </div>
+        <h3>Automated Data Collection</h3>
+        <p>InternSight autonomously gathers internship data from diverse sources, eliminating the need for manual search entirely.</p>
+      </div>
+      <div class="solution-card">
+        <div class="card-icon">
+          <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 0v10m0-10a2 2 0 012 2h2a2 2 0 012-2"/></svg>
+        </div>
+        <h3>Centralised Dashboard</h3>
+        <p>All relevant opportunities are consolidated into one intuitive platform for easy access and management.</p>
+      </div>
+      <div class="solution-card">
+        <div class="card-icon">
+          <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3>Real-time Updates</h3>
+        <p>The platform ensures students receive the latest internship postings and deadline changes promptly as they happen.</p>
+      </div>
+      <div class="solution-card">
+        <div class="card-icon">
+          <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/></svg>
+        </div>
+        <h3>Smart Filtering</h3>
+        <p>Advanced filters allow students to narrow searches by skill, role, and location — optimising every search session.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── IMPACT ─── -->
+  <section class="impact">
+    <div class="section-label">Impact & Roadmap</div>
+    <h2 class="section-title">Built to grow with you</h2>
+
+    <div class="impact-inner">
+      <div class="impact-list">
+        <div class="impact-item">
+          <div class="impact-badge">01</div>
+          <div>
+            <h4>Time Savings</h4>
+            <p>Students reclaim 5–7 hours weekly, redirecting effort to applications and skill development.</p>
+          </div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-badge">02</div>
+          <div>
+            <h4>Centralised Discovery</h4>
+            <p>One platform for all internship needs — no more tab hoarding or missed postings.</p>
+          </div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-badge">03</div>
+          <div>
+            <h4>AI Recommendations</h4>
+            <p>Coming soon: AI-based role matching, resume alignment, and personalised email alerts.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="impact-highlight">
+        <div class="impact-quote">
+          "Automating Opportunity Discovery Through Scalable Django Engineering."
+        </div>
+        <div class="impact-sub">
+          InternSight is built on the belief that students should focus on growth,
+          not on the exhausting logistics of opportunity discovery. Our platform
+          handles the search, you handle the applications.
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CTA ─── -->
+  <section class="cta-banner">
+    <div class="cta-inner">
+      <div class="section-label">Get Started</div>
+      <h2 class="section-title">Ready to find your next internship?</h2>
+      <p class="section-sub">Join students already using InternSight to discover opportunities faster and smarter.</p>
+      <div class="cta-actions">
+        <a href="{% url 'listings' %}" class="btn-primary">Browse Listings</a>
+        <a href="#" class="btn-secondary">Create an Account</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  {% include 'partials/_footer.html' %}
+
+</body>
+</html>
